@@ -36,7 +36,7 @@ retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":
 # Route for the homepage
 @app.route('/')
 def home():
-    return [PINECONE_API_KEY,OPENAI_API_KEY]
+    return "This site is under developement"
 
 # API route for handling JSON requests
 @app.route('/chat', methods=['POST'])
