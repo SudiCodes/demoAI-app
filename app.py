@@ -164,7 +164,6 @@ def loginForm():
     return render_template('login.html')
 
 @app.route('/chat', methods=['GET'])
-@jwt_required()
 def chat():
     return render_template('chat.html')
 

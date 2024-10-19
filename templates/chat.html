@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #507bcf, #02121a); /* Professional gradient background */
+            background: linear-gradient(135deg, #507bcf, #02121a);
         }
 
         .chat-wrapper {
@@ -23,11 +24,13 @@
             min-width: 400px;
             background-color: #fff;
             border-radius: 15px;
-            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.1); /* Cool shadow effect */
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.1);
+            /* Cool shadow effect */
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            height: 80vh; /* Fix height for the entire chat wrapper */
+            height: 80vh;
+            /* Fix height for the entire chat wrapper */
         }
 
         .chat-header {
@@ -46,11 +49,15 @@
             flex-direction: column;
             justify-content: flex-end;
             padding: 20px;
-            overflow-y: auto; /* Enable scrolling */
-            height: 100%; /* Ensure it stays within the wrapper's fixed height */
+            overflow-y: auto;
+            /* Enable scrolling */
+            height: 100%;
+            /* Ensure it stays within the wrapper's fixed height */
             background-color: #f7f7f7;
-            scrollbar-width: thin; /* For Firefox */
-            scrollbar-color: #007bff #f7f7f7; /* For Firefox */
+            scrollbar-width: thin;
+            /* For Firefox */
+            scrollbar-color: #007bff #f7f7f7;
+            /* For Firefox */
         }
 
         .chat-container::-webkit-scrollbar {
@@ -64,15 +71,18 @@
 
         .message {
             display: flex;
-            align-items: flex-start;  /* Align initials and message horizontally */
+            align-items: flex-start;
+            /* Align initials and message horizontally */
             margin: 10px 0;
-            max-width: 80%; /* Reduce width to align better */
+            max-width: 80%;
+            /* Reduce width to align better */
         }
 
         .user-message {
             justify-content: flex-end;
             align-self: flex-end;
-            flex-direction: row-reverse;  /* Place user initials on the right */
+            flex-direction: row-reverse;
+            /* Place user initials on the right */
         }
 
         .user-message .message-content {
@@ -97,7 +107,8 @@
             word-wrap: break-word;
         }
 
-        .initials-circle, .bot-icon {
+        .initials-circle,
+        .bot-icon {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -155,18 +166,19 @@
         }
     </style>
 </head>
+
 <body>
     <div class="chat-wrapper">
         <!-- Chat header with bot title -->
         <div class="chat-header">
             MediEra Medibot
         </div>
-        
+
         <!-- Chat container -->
         <div class="chat-container" id="chat-container" aria-live="polite">
             <!-- Chat messages will be appended here -->
         </div>
-        
+
         <!-- Input area -->
         <div class="input-container">
             <input type="text" class="input-field" id="user-input" placeholder="Type your message..." required>
@@ -184,13 +196,12 @@
 
         // Event listeners for both button click and Enter key
         document.getElementById("send-button").addEventListener("click", sendMessage);
-        document.getElementById("user-input").addEventListener("keydown", function(event) {
+        document.getElementById("user-input").addEventListener("keydown", function (event) {
             if (event.key === "Enter") {
                 sendMessage();
             }
         });
 
-        // Function to send message to chat
         async function sendMessage() {
             const userInput = document.getElementById("user-input").value.trim();
             if (!userInput) return;
@@ -207,18 +218,22 @@
             // Show typing indicator
             const typingIndicator = showTypingIndicator();
 
+            // Get the JWT token from localStorage
+            const token = localStorage.getItem("access_token");
+
             try {
-                // Send the user's message to the backend
+                // Send the user's message to the backend with the token in Authorization header
                 const response = await fetch("/chat", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`  // Include JWT token in the Authorization header
                     },
                     body: JSON.stringify({ query: userInput })
                 });
 
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error('Please login to continue ...');
                 }
 
                 const result = await response.json();
@@ -234,6 +249,7 @@
                 appendMessage("Error: " + error.message, 'bot');
             }
         }
+
 
         // Function to append messages to the chat
         function appendMessage(text, sender, initials = null) {
@@ -277,4 +293,5 @@
         }
     </script>
 </body>
+
 </html>
