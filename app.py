@@ -8,7 +8,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from datetime import datetime
 from src.prompt import *
 import os
@@ -164,13 +164,14 @@ def loginForm():
     return render_template('login.html')
 
 @app.route('/chat', methods=['GET'])
+@jwt_required()
 def chat():
     return render_template('chat.html')
 
 
 # API route for handling JSON requests
 @app.route('/chat', methods=['POST'])
-
+@jwt_required()
 def api():
     data = request.json
     query = data.get("query")  # Extract query from the input JSON
