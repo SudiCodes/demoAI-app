@@ -31,5 +31,5 @@ The **MediEra Medibot** is a user-friendly chat application designed to provide 
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/medibot-chat.git
+   git https://github.com/SudiCodes/demoAI-app.git
    cd medibot-chat
