@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - MediEra Medibot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #507bcf, #02121a); /* Professional gradient background */
+        }
+
+        .chat-wrapper {
+            width: 50%;
+            max-width: 800px;
+            min-width: 400px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.1); /* Cool shadow effect */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 80vh; /* Fix height for the entire chat wrapper */
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: 600;
+            border-bottom: 2px solid #0056b3;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            overflow-y: auto; /* Enable scrolling */
+            height: 100%; /* Ensure it stays within the wrapper's fixed height */
+            background-color: #f7f7f7;
+            scrollbar-width: thin; /* For Firefox */
+            scrollbar-color: #007bff #f7f7f7; /* For Firefox */
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 10px;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;  /* Align initials and message horizontally */
+            margin: 10px 0;
+            max-width: 80%; /* Reduce width to align better */
+        }
+
+        .user-message {
+            justify-content: flex-end;
+            align-self: flex-end;
+            flex-direction: row-reverse;  /* Place user initials on the right */
+        }
+
+        .user-message .message-content {
+            background-color: #007bff;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .bot-message {
+            justify-content: flex-start;
+        }
+
+        .bot-message .message-content {
+            background-color: #e1e1e1;
+            color: black;
+            margin-right: 10px;
+        }
+
+        .message-content {
+            padding: 10px;
+            border-radius: 10px;
+            word-wrap: break-word;
+        }
+
+        .initials-circle, .bot-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .initials-circle {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .bot-icon {
+            background-color: #e1e1e1;
+            color: black;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #f1f1f1;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .send-btn {
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .send-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .typing-indicator {
+            margin-top: 10px;
+            font-style: italic;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-wrapper">
+        <!-- Chat header with bot title -->
+        <div class="chat-header">
+            MediEra Medibot
+        </div>
+        
+        <!-- Chat container -->
+        <div class="chat-container" id="chat-container" aria-live="polite">
+            <!-- Chat messages will be appended here -->
+        </div>
+        
+        <!-- Input area -->
+        <div class="input-container">
+            <input type="text" class="input-field" id="user-input" placeholder="Type your message..." required>
+            <button class="send-btn" id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Helper function to generate user initials
+        function getInitials(name) {
+            const names = name.split(' ');
+            const initials = names[0][0] + (names.length > 1 ? names[1][0] : '');
+            return initials.toUpperCase();
+        }
+
+        // Event listeners for both button click and Enter key
+        document.getElementById("send-button").addEventListener("click", sendMessage);
+        document.getElementById("user-input").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+
+        // Function to send message to chat
+        async function sendMessage() {
+            const userInput = document.getElementById("user-input").value.trim();
+            if (!userInput) return;
+
+            // Simulated user name (can be dynamic)
+            const userName = "John Doe";  // Replace with actual user name
+
+            // Display user's message with initials
+            appendMessage(userInput, 'user', getInitials(userName));
+
+            // Clear the input field
+            document.getElementById("user-input").value = '';
+
+            // Show typing indicator
+            const typingIndicator = showTypingIndicator();
+
+            try {
+                // Send the user's message to the backend
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ query: userInput })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+                const botResponse = result.answer || "Sorry, I didn't understand that.";  // Fallback message
+
+                // Remove typing indicator and display bot's response
+                const chatContainer = document.getElementById("chat-container");
+                chatContainer.removeChild(typingIndicator);
+                appendMessage(botResponse, 'bot');
+            } catch (error) {
+                const chatContainer = document.getElementById("chat-container");
+                chatContainer.removeChild(typingIndicator);
+                appendMessage("Error: " + error.message, 'bot');
+            }
+        }
+
+        // Function to append messages to the chat
+        function appendMessage(text, sender, initials = null) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message", sender === 'user' ? 'user-message' : 'bot-message');
+
+            // Add the initials or bot icon
+            const avatar = document.createElement("div");
+            if (sender === 'user') {
+                avatar.classList.add("initials-circle");
+                avatar.textContent = initials;
+            } else {
+                avatar.classList.add("bot-icon");
+                avatar.textContent = "🤖";  // Bot icon
+            }
+
+            // Add message content
+            const messageContent = document.createElement("div");
+            messageContent.classList.add("message-content");
+            messageContent.textContent = text;
+
+            // Append to the message
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+
+            // Append the message to the chat container
+            const chatContainer = document.getElementById("chat-container");
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
+        }
+
+        // Function to simulate bot typing
+        function showTypingIndicator() {
+            const typingDiv = document.createElement("div");
+            typingDiv.classList.add("typing-indicator");
+            typingDiv.textContent = "🤖 Thinking...";
+            const chatContainer = document.getElementById("chat-container");
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
+            return typingDiv;
+        }
+    </script>
+</body>
+</html>

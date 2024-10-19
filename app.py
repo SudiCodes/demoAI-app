@@ -158,8 +158,19 @@ retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":
 def home():
     return "This site is under developement"
 
+# Route for the authentication page
+@app.route('/auth')
+def loginForm():
+    return render_template('login.html')
+
+@app.route('/chat', methods=['GET'])
+def chat():
+    return render_template('chat.html')
+
+
 # API route for handling JSON requests
 @app.route('/chat', methods=['POST'])
+
 def api():
     data = request.json
     query = data.get("query")  # Extract query from the input JSON
