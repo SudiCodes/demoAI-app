@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Use the existing Dockerfile in your project
+    container_name: flask
+    expose:
+      - "8000"
+    environment:
+      - FLASK_ENV=production
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx  # Nginx configuration (create a separate Dockerfile for this)
+    ports:
+      - "80:80"
+    depends_on:
+      - flask
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
