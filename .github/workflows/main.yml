@@ -14,14 +14,29 @@ jobs:
         PRIVATE_KEY: ${{ secrets.SSH_KEY }}
         HOST_NAME: ${{ secrets.HOST_NAME }}
         USER_NAME: ${{ secrets.USER_NAME }}
-        GITHUB_PAT: ${{ secrets.PAT }}
+        PAT: ${{ secrets.PAT }}  # Using PAT instead of GITHUB_PAT
       run: |
+        echo "Step 1: Creating private key file"
         echo "$PRIVATE_KEY" > private_key
         chmod 600 private_key
+        echo "Private key file created and permissions set."
+
+        echo "Step 2: SSH into EC2 instance"
         ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} << EOF
-        cd /home/ec2-user/demoAI-app
+        echo "SSH connection successful"
+
+        echo "Step 3: Navigating to the project directory"
+        cd /home/ec2-user/demoAI-app || { echo "Directory not found"; exit 1; }
+
+        echo "Step 4: Configuring Git credentials"
         git config --global credential.helper store
-        echo "https://${PAT}:@github.com" > ~/.git-credentials 
-        git pull
-        sudo systemctl restart gunicorn
+        echo "https://${PAT}:@github.com" > ~/.git-credentials
+
+        echo "Step 5: Pulling the latest code from GitHub"
+        git pull https://github.com/SudiCodes/demoAI-app.git || { echo "Git pull failed"; exit 1; }
+
+        echo "Step 6: Restarting Gunicorn"
+        sudo systemctl restart gunicorn || { echo "Failed to restart Gunicorn"; exit 1; }
+
+        echo "Deployment completed successfully."
         EOF
