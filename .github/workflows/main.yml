@@ -14,11 +14,14 @@ jobs:
         PRIVATE_KEY: ${{ secrets.SSH_KEY }}
         HOST_NAME: ${{ secrets.HOST_NAME }}
         USER_NAME: ${{ secrets.USER_NAME }}
+        GITHUB_PAT: ${{ secrets.PAT }}
       run: |
         echo "$PRIVATE_KEY" > private_key
         chmod 600 private_key
         ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} << EOF
-        cd /home/ec2-user/demoAI-app  # Change to the correct directory
+        cd /home/ec2-user/demoAI-app
+        git config --global credential.helper store
+        echo "https://${PAT}:@github.com" > ~/.git-credentials 
         git pull
         sudo systemctl restart gunicorn
         EOF
