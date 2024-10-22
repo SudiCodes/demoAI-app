@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediEra Medibot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #507bcf, #02121a);
+            color: #fff;
+        }
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .content {
+            width: 50%;
+            padding-left: 40px;
+        }
+        h1 {
+            font-size: 2.5rem;
+        }
+        p {
+            font-size: 1rem;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+        .login-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .login-btn:hover {
+            background-color: #45a049;
+        }
+        .icons {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+        }
+        .icons i {
+            font-size: 60px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        .icons i:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+
+    <a href="/auth" class="login-btn">Login</a>
+
+    <div class="container">
+        <div class="content">
+            <h1>MediEra Medibot</h1>
+            <p>Mediera Bot is an AI-driven assistant designed to streamline healthcare services. 
+                It assists users in scheduling appointments, accessing medical records, and answering 
+                health-related queries. With real-time data integration, Mediera Bot ensures accurate 
+                and timely responses to patient inquiries.</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
