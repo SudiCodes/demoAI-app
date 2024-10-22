@@ -156,7 +156,7 @@ retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":
 # Route for the homepage
 @app.route('/')
 def home():
-    return "This site is under developement"
+    return "This site is under developement. testing github actions ..."
 
 # Route for the authentication page
 @app.route('/auth')
